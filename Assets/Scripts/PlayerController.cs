@@ -10,9 +10,23 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Transform movePoint;
     private float moveOffset = 2.5f;
 
+    [SerializeField] private GameObject playerMesh;
+
     [SerializeField] private LayerMask collisionLayer;
 
     private Vector3 newCameraPos;
+
+
+    [SerializeField] private GameObject[] healthPoints;
+    private int healthLeft = 3;
+    private bool playerHit = false;
+
+    [Header("SFX")] 
+    [SerializeField] private AudioClip move;
+    [SerializeField] private AudioClip hurt;
+    
+
+    private bool playOnce = true;
     
     void Start()
     {
@@ -20,11 +34,17 @@ public class PlayerController : MonoBehaviour
         movePoint = GameObject.FindGameObjectWithTag("MovePoint").transform;
         movePoint.parent = null;
         newCameraPos = Camera.main.transform.position;
+
+        healthPoints = GameObject.FindGameObjectsWithTag("Health");
     }
 
     private bool pressOnce = true;
     void Update()
     {
+        if (playerHit)
+        {
+            return;
+        }
         movement = new Vector3(Input.GetAxisRaw("Horizontal"), 0f, Input.GetAxisRaw("Vertical"));
 
         if (Mathf.Abs(movement.x) == 1f && pressOnce)
@@ -61,6 +81,54 @@ public class PlayerController : MonoBehaviour
         transform.position = Vector3.SmoothDamp(transform.position, movePoint.position, ref z, 0.02f);
         Camera.main.transform.position = Vector3.SmoothDamp(Camera.main.transform.position,
             newCameraPos, ref z2, 0.05f);
+
+        Rotate();
+        if (movement != Vector3.zero && playOnce)
+        {
+            SFXController.instance.PlaySFX(move, transform, 0.02f);
+            playOnce = false;
+        }
+        else if (movement == Vector3.zero)
+        {
+            playOnce = true;
+        }
+    }
+
+    void Rotate()
+    {
+        if (movement.x > 0)
+        {
+            playerMesh.GetComponent<Animator>().CrossFade("right", 0.05f);
+        }
+        else if (movement.x < 0)
+        {
+            playerMesh.GetComponent<Animator>().CrossFade("left", 0.05f);
+        }
+        else if (movement.z > 0)
+        {
+            playerMesh.GetComponent<Animator>().CrossFade("up", 0.05f);
+        }
+        else if (movement.z < 0)
+        {
+            playerMesh.GetComponent<Animator>().CrossFade("down", 0.05f);
+        }
+    }
+
+    public void GotHit(float cooldown)
+    {
+        CameraShake.Shake(1f, 2f);
+        healthPoints[healthLeft - 1].SetActive(false);
+        healthLeft -= 1;
+        IEnumerator coroutine = HitCooldown(cooldown);
+        StartCoroutine(coroutine);
+    }
+
+    private IEnumerator HitCooldown(float cooldown)
+    {
+        playerHit = true;
+        SFXController.instance.PlaySFX(hurt, transform, 0.1f);
+        yield return new WaitForSeconds(1f);
+        playerHit = false;
     }
 
 }

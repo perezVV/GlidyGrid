@@ -6,6 +6,11 @@ TagManager:
   tags:
   - MovePoint
   - GRIDPOINT
+  - Health
+  - GRID
+  - Obstacle
+  - Log
+  - Spike
   layers:
   - Default
   - TransparentFX
