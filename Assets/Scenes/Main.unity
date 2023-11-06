@@ -5140,6 +5140,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3a7dc78eced90af43ae766f5cb90f442, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attack: {fileID: 8300000, guid: 231bfb5125473a947bc0b77762fc71ef, type: 3}
+  warningSound: {fileID: 8300000, guid: d2a345482a34f6d4c9b724c7fda9c35e, type: 3}
 --- !u!114 &2141711208
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5175,6 +5177,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 015a35e83fd1ce04ba05c3acce45b773, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  attack: {fileID: 8300000, guid: b774607c55e91284d9384b4d2c5716f0, type: 3}
+  warningSound: {fileID: 8300000, guid: d2a345482a34f6d4c9b724c7fda9c35e, type: 3}
 --- !u!114 &2141711210
 MonoBehaviour:
   m_ObjectHideFlags: 0

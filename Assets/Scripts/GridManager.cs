@@ -67,11 +67,21 @@ public class GridManager : MonoBehaviour
 
     public void UseGridPoint(int whichPoint)
     {
+        if (whichPoint > isInUse.Count - 1)
+        {
+            Debug.Log("index too large");
+            return;
+        }
         isInUse[whichPoint] = true;
     }
 
     public void StopUsingGridPoint(int whichPoint)
     {
+        if (whichPoint > isInUse.Count - 1)
+        {
+            Debug.Log("index too large");
+            return;
+        }
         isInUse[whichPoint] = false;
     }
 
@@ -106,6 +116,11 @@ public class GridManager : MonoBehaviour
 
     public bool IsGridPointInUse(int whichPoint)
     {
+        if (whichPoint > isInUse.Count - 1)
+        {
+            Debug.Log("index too large");
+            return false;
+        }
         if (isInUse[whichPoint])
         {
             return true;

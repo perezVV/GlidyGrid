@@ -8,6 +8,10 @@ using Random = UnityEngine.Random;
 public class SpikeManager : MonoBehaviour
 {
 
+    [Header("SFX")] 
+    [SerializeField] private AudioClip attack;
+    [SerializeField] private AudioClip warningSound;
+    
     private GridManager gridManager;
 
     private GameObject spike;
@@ -61,12 +65,36 @@ public class SpikeManager : MonoBehaviour
     {
         while (doSpawning)
         {
-            yield return new WaitForSeconds(5.5f);
+            yield return new WaitForSeconds(5.3f);
             currentRound++;
             if (currentRound == rounds)
             {
                 doSpawning = false;
             }
+        }
+    }
+
+    IEnumerator SFX()
+    {
+        while (doSpawning)
+        {
+            yield return new WaitForSeconds(4.3f);
+            SFXController.instance.PlaySFX(attack, transform, 0.05f);
+            yield return new WaitForSeconds(1f);
+        }
+    }
+
+    IEnumerator WarningSFX()
+    {
+        while (doSpawning)
+        {
+            yield return new WaitForSeconds(3f);
+            SFXController.instance.PlaySFX(warningSound, transform, 0.02f);
+            yield return new WaitForSeconds(0.5f);
+            SFXController.instance.PlaySFX(warningSound, transform, 0.02f);
+            yield return new WaitForSeconds(0.5f);
+            SFXController.instance.PlaySFX(warningSound, transform, 0.02f);
+            yield return new WaitForSeconds(1.3f);
         }
     }
 
@@ -83,6 +111,8 @@ public class SpikeManager : MonoBehaviour
         currentRound = 0;
         rounds = amtRounds;
         StartCoroutine("CountRounds");
+        StartCoroutine("SFX");
+        StartCoroutine("WarningSFX");
         for (int i = 0; i < amt; i++)
         {
             StartCoroutine("SpawnSpike");

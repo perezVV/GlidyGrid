@@ -5,6 +5,10 @@ using UnityEngine;
 public class LogManager : MonoBehaviour
 {
 
+    [Header("SFX")] 
+    [SerializeField] private AudioClip attack;
+    [SerializeField] private AudioClip warningSound;
+
     private GridManager gridManager;
     private bool doSpawning;
 
@@ -55,6 +59,7 @@ public class LogManager : MonoBehaviour
         yield return new WaitForSeconds(1.3f);
 
         GameObject newLog = Instantiate(log, gridManager.gridRows[rand][0].transform, false);
+        SFXController.instance.PlaySFX(attack, transform, 0.05f);
         int randomAnim = Random.Range(0, 2);
         if (randomAnim == 0)
         {
@@ -71,6 +76,20 @@ public class LogManager : MonoBehaviour
             gridManager.StopUsingGridPoint(gridManager.FindGridIndex(gridManager.gridRows[rand][i]));
         }
         Destroy(newLog);
+    }
+
+    IEnumerator WarningSFX()
+    {
+        while (doSpawning)
+        {
+            yield return new WaitForSeconds(1f);
+            SFXController.instance.PlaySFX(warningSound, transform, 0.02f);
+            yield return new WaitForSeconds(0.5f);
+            SFXController.instance.PlaySFX(warningSound, transform, 0.02f);
+            yield return new WaitForSeconds(0.5f);
+            SFXController.instance.PlaySFX(warningSound, transform, 0.02f);
+            yield return new WaitForSeconds(2.3f);
+        }
     }
 
     IEnumerator SpawnLogAmt(int amt, float length)
@@ -93,6 +112,7 @@ public class LogManager : MonoBehaviour
     {
         doSpawning = true;
         IEnumerator coroutine = SpawnLogAmt(amt, length);
+        StartCoroutine("WarningSFX");
         StartCoroutine(coroutine);
     }
 
