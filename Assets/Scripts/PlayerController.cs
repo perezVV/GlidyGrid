@@ -20,6 +20,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private GameObject[] healthPoints;
     private int healthLeft = 3;
     private bool playerHit = false;
+    public bool isNotFullHealth = false;
 
     [Header("SFX")] 
     [SerializeField] private AudioClip move;
@@ -35,7 +36,7 @@ public class PlayerController : MonoBehaviour
         movePoint.parent = null;
         newCameraPos = Camera.main.transform.position;
 
-        healthPoints = GameObject.FindGameObjectsWithTag("Health");
+        // healthPoints = GameObject.FindGameObjectsWithTag("Health");
     }
 
     private bool pressOnce = true;
@@ -117,10 +118,10 @@ public class PlayerController : MonoBehaviour
     public void GotHit(float cooldown)
     {
         CameraShake.Shake(1f, 2f);
-        healthPoints[healthLeft - 1].SetActive(false);
-        healthLeft -= 1;
         IEnumerator coroutine = HitCooldown(cooldown);
         StartCoroutine(coroutine);
+        StartCoroutine("DestroyHeartUI");
+        isNotFullHealth = true;
     }
 
     private IEnumerator HitCooldown(float cooldown)
@@ -129,6 +130,30 @@ public class PlayerController : MonoBehaviour
         SFXController.instance.PlaySFX(hurt, transform, 0.1f);
         yield return new WaitForSeconds(1f);
         playerHit = false;
+    }
+
+    private IEnumerator DestroyHeartUI()
+    {
+        GameObject destroyedHeart = healthPoints[healthLeft - 1];
+        destroyedHeart.GetComponent<Animator>().CrossFade("deathUIHeart", 0.2f);
+        healthLeft -= 1;
+        yield return new WaitForSeconds(destroyedHeart.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+        destroyedHeart.SetActive(false);
+    }
+
+    public IEnumerator GainHeart()
+    {
+        GameObject newHeart = healthPoints[healthLeft];
+        newHeart.SetActive(true);
+        newHeart.GetComponent<Animator>().Play("spawnUIHeart");
+        yield return new WaitForSeconds(newHeart.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+        float currentTime = healthPoints[0].GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime;
+        newHeart.GetComponent<Animator>().CrossFade("idleUIHeart", 0.05f, 0, currentTime);
+        healthLeft += 1;
+        if (healthLeft == 3)
+        {
+            isNotFullHealth = false;
+        }
     }
 
 }

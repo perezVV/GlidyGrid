@@ -721,7 +721,7 @@ GameObject:
   - component: {fileID: 5692764246229571311}
   m_Layer: 0
   m_Name: Heart
-  m_TagString: Untagged
+  m_TagString: Health
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -846,6 +846,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f32c758065b790e44a2defd706270e33, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  heartPickup: {fileID: 8300000, guid: 777dee167ee889343a80d675681f2230, type: 3}
+  coinPickup: {fileID: 8300000, guid: d96144582e9f8a445be1e51f82c733a0, type: 3}
 --- !u!1 &6574091114309173524
 GameObject:
   m_ObjectHideFlags: 0

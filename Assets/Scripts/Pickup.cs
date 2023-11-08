@@ -8,6 +8,10 @@ public class Pickup : MonoBehaviour
 
     private GameObject player;
 
+    [Header("SFX")] 
+    [SerializeField] private AudioClip heartPickup;
+    [SerializeField] private AudioClip coinPickup;
+
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
@@ -17,6 +21,15 @@ public class Pickup : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            if (gameObject.CompareTag("Health"))
+            {
+                player.GetComponent<PlayerController>().StartCoroutine("GainHeart");
+                SFXController.instance.PlaySFX(heartPickup, transform, 0.05f);
+            }
+            else if (gameObject.CompareTag("Coin"))
+            {
+                SFXController.instance.PlaySFX(coinPickup, transform, 0.05f);
+            }
             Destroy(gameObject);
         }
     }

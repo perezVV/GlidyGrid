@@ -14,7 +14,7 @@ public class LogManager : MonoBehaviour
 
     private GameObject log;
     private GameObject warning;
-
+    
     IEnumerator WarnLog(int row, int index)
     {
         GameObject newWarning = Instantiate(warning, gridManager.gridRows[row][index].transform, false);
@@ -33,7 +33,7 @@ public class LogManager : MonoBehaviour
             {
                 if (gridManager.IsGridPointInUse(gridManager.FindGridIndex(gridManager.gridRows[rand][i])))
                 {
-                    Debug.Log("Can't spawn! " + gridManager.gridRows[rand][i] + " is filled.");
+                    // Debug.Log("Can't spawn! " + gridManager.gridRows[rand][i] + " is filled.");
                     canSpawn = false;
                     rand = Random.Range(0, gridManager.gridRows.Length);
                 }
@@ -80,16 +80,12 @@ public class LogManager : MonoBehaviour
 
     IEnumerator WarningSFX()
     {
-        while (doSpawning)
-        {
-            yield return new WaitForSeconds(1f);
-            SFXController.instance.PlaySFX(warningSound, transform, 0.02f);
-            yield return new WaitForSeconds(0.5f);
-            SFXController.instance.PlaySFX(warningSound, transform, 0.02f);
-            yield return new WaitForSeconds(0.5f);
-            SFXController.instance.PlaySFX(warningSound, transform, 0.02f);
-            yield return new WaitForSeconds(2.3f);
-        }
+        yield return new WaitForSeconds(1f);
+        SFXController.instance.PlaySFX(warningSound, transform, 0.02f);
+        yield return new WaitForSeconds(0.5f);
+        SFXController.instance.PlaySFX(warningSound, transform, 0.02f);
+        yield return new WaitForSeconds(0.5f);
+        SFXController.instance.PlaySFX(warningSound, transform, 0.02f);
     }
 
     IEnumerator SpawnLogAmt(int amt, float length)
@@ -97,6 +93,7 @@ public class LogManager : MonoBehaviour
         for (int i = 0; i < amt; i++)
         {
             StartCoroutine("SpawnLog");
+            StartCoroutine("WarningSFX");
             yield return new WaitForSeconds(length);
         }
     }
@@ -112,7 +109,6 @@ public class LogManager : MonoBehaviour
     {
         doSpawning = true;
         IEnumerator coroutine = SpawnLogAmt(amt, length);
-        StartCoroutine("WarningSFX");
         StartCoroutine(coroutine);
     }
 

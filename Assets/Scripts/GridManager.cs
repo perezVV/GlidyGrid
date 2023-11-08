@@ -69,7 +69,7 @@ public class GridManager : MonoBehaviour
     {
         if (whichPoint > isInUse.Count - 1)
         {
-            Debug.Log("index too large");
+            // Debug.Log("index too large");
             return;
         }
         isInUse[whichPoint] = true;
@@ -79,7 +79,7 @@ public class GridManager : MonoBehaviour
     {
         if (whichPoint > isInUse.Count - 1)
         {
-            Debug.Log("index too large");
+            // Debug.Log("index too large");
             return;
         }
         isInUse[whichPoint] = false;
@@ -97,7 +97,7 @@ public class GridManager : MonoBehaviour
         {
             if (isInUse[i] == true)
             {
-                Debug.Log(gridPoints[i] + " is in use!");
+                // Debug.Log(gridPoints[i] + " is in use!");
             }
         }
     }
@@ -118,7 +118,7 @@ public class GridManager : MonoBehaviour
     {
         if (whichPoint > isInUse.Count - 1)
         {
-            Debug.Log("index too large");
+            // Debug.Log("index too large");
             return false;
         }
         if (isInUse[whichPoint])

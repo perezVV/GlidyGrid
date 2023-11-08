@@ -38,7 +38,7 @@ public class ObstacleManager : MonoBehaviour
         heartManager.SpawnHearts();
         coinManager.SpawnCoins();
         logManager.SpawnLogs(100, 5f);
-        // spikeManager.SpawnSpikes(10, 100);
+        spikeManager.SpawnSpikes(10, 100);
     }
 
     // Update is called once per frame
