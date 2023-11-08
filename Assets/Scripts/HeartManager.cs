@@ -13,12 +13,18 @@ public class HeartManager : MonoBehaviour
 
     private GameObject player;
     
-    IEnumerator SpawnHeart()
+    void SpawnHeart()
     {
         int rand = Random.Range(0, gridManager.gridPoints.Length);
-        yield return new WaitForSeconds(10f);
-
         GameObject newHeart = Instantiate(heart, gridManager.gridPoints[rand].transform, false);
+        IEnumerator coroutine = SpawnAnim(newHeart);
+        StartCoroutine(coroutine);
+    }
+
+    IEnumerator SpawnAnim(GameObject newHeart)
+    {
+        newHeart.GetComponent<Animator>().Play("coinSpawn");
+        yield return new WaitForSeconds(0.5f);
         newHeart.GetComponent<Animator>().Play("coinSpin");
     }
 
@@ -29,12 +35,7 @@ public class HeartManager : MonoBehaviour
             int rand = Random.Range(0, 11);
             if (rand == 0)
             {
-                Debug.Log("spawned!");
-                StartCoroutine("SpawnHeart");
-            }
-            else
-            {
-                Debug.Log("Heart didn't spawn! Trying again...");
+                SpawnHeart();
             }
 
             yield return new WaitForSeconds(3f);
@@ -47,7 +48,6 @@ public class HeartManager : MonoBehaviour
         {
             if (player.GetComponent<PlayerController>().isNotFullHealth && doOnce)
             {
-                Debug.Log("heart spawning enabled!");
                 canSpawn = true;
                 StartCoroutine("TryToSpawn");
                 doOnce = false;
@@ -55,7 +55,6 @@ public class HeartManager : MonoBehaviour
 
             else if (!player.GetComponent<PlayerController>().isNotFullHealth && !doOnce)
             {
-                Debug.Log("heart spawning disabled!");
                 canSpawn = false;
                 StopCoroutine("TryToSpawn");
                 doOnce = true;

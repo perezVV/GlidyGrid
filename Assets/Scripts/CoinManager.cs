@@ -14,9 +14,21 @@ public class CoinManager : MonoBehaviour
         while (doSpawning)
         {
             int rand = Random.Range(0, gridManager.gridPoints.Length);
-            yield return new WaitForSeconds(10f);
+            int randTime = Random.Range(1, 11);
 
             GameObject newCoin = Instantiate(coin, gridManager.gridPoints[rand].transform, false);
+            IEnumerator coroutine = SpawnAnim(newCoin);
+            StartCoroutine(coroutine);
+            yield return new WaitForSeconds(randTime);
+        }
+    }
+
+    IEnumerator SpawnAnim(GameObject newCoin)
+    {
+        newCoin.GetComponent<Animator>().Play("coinSpawn");
+        yield return new WaitForSeconds(0.5f);
+        if (newCoin != null)
+        {
             newCoin.GetComponent<Animator>().Play("coinSpin");
         }
     }

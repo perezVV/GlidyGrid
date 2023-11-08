@@ -1,7 +1,9 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -16,11 +18,17 @@ public class PlayerController : MonoBehaviour
 
     private Vector3 newCameraPos;
 
+    [SerializeField] private GameObject gameOverText;
+
 
     [SerializeField] private GameObject[] healthPoints;
     private int healthLeft = 3;
     private bool playerHit = false;
     public bool isNotFullHealth = false;
+
+    [SerializeField] private GameObject coinUI;
+    [SerializeField] private TextMeshProUGUI coinText;
+    public int coinAmt;
 
     [Header("SFX")] 
     [SerializeField] private AudioClip move;
@@ -31,6 +39,7 @@ public class PlayerController : MonoBehaviour
     
     void Start()
     {
+        coinAmt = 0;
         rb = GetComponent<Rigidbody>();
         movePoint = GameObject.FindGameObjectWithTag("MovePoint").transform;
         movePoint.parent = null;
@@ -122,13 +131,19 @@ public class PlayerController : MonoBehaviour
         StartCoroutine(coroutine);
         StartCoroutine("DestroyHeartUI");
         isNotFullHealth = true;
+        if (healthLeft == 0)
+        {
+            gameOverText.GetComponent<TextMeshProUGUI>().enabled = true;
+            gameOverText.transform.GetChild(0).gameObject.SetActive(true);
+            gameObject.SetActive(false);
+        }
     }
 
     private IEnumerator HitCooldown(float cooldown)
     {
         playerHit = true;
         SFXController.instance.PlaySFX(hurt, transform, 0.1f);
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(cooldown);
         playerHit = false;
     }
 
@@ -146,14 +161,29 @@ public class PlayerController : MonoBehaviour
         GameObject newHeart = healthPoints[healthLeft];
         newHeart.SetActive(true);
         newHeart.GetComponent<Animator>().Play("spawnUIHeart");
-        yield return new WaitForSeconds(newHeart.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).length);
+        yield return new WaitForSeconds(1f);
         float currentTime = healthPoints[0].GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime;
-        newHeart.GetComponent<Animator>().CrossFade("idleUIHeart", 0.05f, 0, currentTime);
+        newHeart.GetComponent<Animator>().CrossFade("idleUIHeart", 1f, 0, currentTime);
         healthLeft += 1;
         if (healthLeft == 3)
         {
             isNotFullHealth = false;
         }
+    }
+
+    public IEnumerator GainCoin()
+    {
+        float currentTime = coinUI.GetComponent<Animator>().GetCurrentAnimatorStateInfo(0).normalizedTime;
+        coinUI.GetComponent<Animator>().Play("newcoinUICoin");
+        coinAmt += 1;
+        coinText.text = coinAmt.ToString();
+        yield return new WaitForSeconds(0.167f);
+        coinUI.GetComponent<Animator>().Play("idleUICoin", 0, currentTime);
+    }
+
+    public void RestartGame()
+    {
+        SceneManager.LoadScene(0);
     }
 
 }

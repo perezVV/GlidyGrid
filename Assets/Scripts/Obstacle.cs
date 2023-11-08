@@ -15,14 +15,17 @@ public class Obstacle : MonoBehaviour
     void Start()
     {
         player = GameObject.FindGameObjectWithTag("Player");
-        playerScript = player.GetComponent<PlayerController>();
+        if (player != null)
+        {
+            playerScript = player.GetComponent<PlayerController>();
+        }
         if (gameObject.CompareTag("Spike"))
         {
             cooldown = 1f;
         }
         else if (gameObject.CompareTag("Log"))
         {
-            cooldown = 0.5f;
+            cooldown = 0.15f;
         }
     }
     

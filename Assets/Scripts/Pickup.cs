@@ -23,11 +23,19 @@ public class Pickup : MonoBehaviour
         {
             if (gameObject.CompareTag("Health"))
             {
-                player.GetComponent<PlayerController>().StartCoroutine("GainHeart");
-                SFXController.instance.PlaySFX(heartPickup, transform, 0.05f);
+                if (player.GetComponent<PlayerController>().isNotFullHealth)
+                {
+                    player.GetComponent<PlayerController>().StartCoroutine("GainHeart");
+                    SFXController.instance.PlaySFX(heartPickup, transform, 0.05f);
+                }
+                else
+                {
+                    return;
+                }
             }
             else if (gameObject.CompareTag("Coin"))
             {
+                player.GetComponent<PlayerController>().StartCoroutine("GainCoin");
                 SFXController.instance.PlaySFX(coinPickup, transform, 0.05f);
             }
             Destroy(gameObject);

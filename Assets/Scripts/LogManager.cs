@@ -10,7 +10,7 @@ public class LogManager : MonoBehaviour
     [SerializeField] private AudioClip warningSound;
 
     private GridManager gridManager;
-    private bool doSpawning;
+    public bool doSpawning;
 
     private GameObject log;
     private GameObject warning;
@@ -49,7 +49,6 @@ public class LogManager : MonoBehaviour
         {
             gridManager.UseGridPoint(gridManager.FindGridIndex(gridManager.gridRows[rand][i]));
         }
-        yield return new WaitForSeconds(1f);
 
         for (int i = 0; i < gridManager.gridRows[rand].Length; i++)
         {
@@ -80,7 +79,6 @@ public class LogManager : MonoBehaviour
 
     IEnumerator WarningSFX()
     {
-        yield return new WaitForSeconds(1f);
         SFXController.instance.PlaySFX(warningSound, transform, 0.02f);
         yield return new WaitForSeconds(0.5f);
         SFXController.instance.PlaySFX(warningSound, transform, 0.02f);
@@ -96,6 +94,7 @@ public class LogManager : MonoBehaviour
             StartCoroutine("WarningSFX");
             yield return new WaitForSeconds(length);
         }
+        doSpawning = false;
     }
     
     public void SetupLogs(GameObject l, GameObject w, GridManager g)
