@@ -9,6 +9,7 @@ public class PlayerController : MonoBehaviour
 {
     private Vector3 movement = Vector3.zero;
     [SerializeField] private Rigidbody rb;
+    [SerializeField] private SquashNStretch sns;
     [SerializeField] private Transform movePoint;
     private float moveOffset = 2.5f;
 
@@ -102,31 +103,43 @@ public class PlayerController : MonoBehaviour
         {
             playOnce = true;
         }
+        
     }
 
+    // make it so it only SNS's if the player moves
     void Rotate()
     {
         if (movement.x > 0)
         {
             playerMesh.GetComponent<Animator>().CrossFade("right", 0.05f);
+            sns.SetAxis(SquashNStretch.SquashStretchAxis.X);
+            sns.PlaySquashAndStretch();
         }
         else if (movement.x < 0)
         {
             playerMesh.GetComponent<Animator>().CrossFade("left", 0.05f);
+            sns.SetAxis(SquashNStretch.SquashStretchAxis.X);
+            sns.PlaySquashAndStretch();
         }
         else if (movement.z > 0)
         {
             playerMesh.GetComponent<Animator>().CrossFade("up", 0.05f);
+            sns.SetAxis(SquashNStretch.SquashStretchAxis.Z);
+            sns.PlaySquashAndStretch();
         }
         else if (movement.z < 0)
         {
             playerMesh.GetComponent<Animator>().CrossFade("down", 0.05f);
+            sns.SetAxis(SquashNStretch.SquashStretchAxis.Z);
+            sns.PlaySquashAndStretch();
         }
     }
 
     public void GotHit(float cooldown)
     {
+        Transform orig = Camera.main.transform;
         CameraShake.Shake(1f, 2f);
+        StartCoroutine(FixCamera(orig));
         IEnumerator coroutine = HitCooldown(cooldown);
         StartCoroutine(coroutine);
         StartCoroutine("DestroyHeartUI");
@@ -137,6 +150,12 @@ public class PlayerController : MonoBehaviour
             gameOverText.transform.GetChild(0).gameObject.SetActive(true);
             gameObject.SetActive(false);
         }
+    }
+
+    private IEnumerator FixCamera(Transform orig)
+    {
+        yield return new WaitForSeconds(0.5f);
+        Camera.main.transform.rotation = orig.rotation;
     }
 
     private IEnumerator HitCooldown(float cooldown)

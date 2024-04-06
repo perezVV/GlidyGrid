@@ -8,6 +8,8 @@ using Random = UnityEngine.Random;
 public class SpikeManager : MonoBehaviour
 {
 
+    [SerializeField] private SquashNStretch sns;
+    
     [Header("SFX")] 
     [SerializeField] private AudioClip attack;
     [SerializeField] private AudioClip warningSound;
@@ -20,7 +22,7 @@ public class SpikeManager : MonoBehaviour
 
     private int rounds;
     private int currentRound;
-
+    
     IEnumerator WarnSpike(int rand)
     {
         GameObject newWarning = Instantiate(warning, gridManager.gridPoints[rand].transform, false);
@@ -48,7 +50,10 @@ public class SpikeManager : MonoBehaviour
         //Spawn the spike
         GameObject newSpike = Instantiate(spike, gridManager.gridPoints[rand].transform, false);
         newSpike.GetComponent<Animator>().Play("spikeUp");
+        sns = newSpike.GetComponent<SquashNStretch>();
         CameraShake.Shake(0.5f, 0.5f);
+        sns.SetAxis(SquashNStretch.SquashStretchAxis.Y);
+        sns.PlaySquashAndStretch();
         yield return new WaitForSeconds(1f);
         
         //Despawn the spike
